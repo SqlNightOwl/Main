@@ -1,0 +1,14 @@
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_NULLS ON
+GO
+CREATE PROCEDURE [customers].[uspCUSTOMERS_GetCountryList]
+AS
+BEGIN
+	SELECT [Code],[Name]
+	  FROM [dbo].[Country]
+	ORDER BY 
+	CASE WHEN [Code]='USA' THEN 'AAA' ELSE [Name] END asc
+	RETURN(0)
+END
+GO

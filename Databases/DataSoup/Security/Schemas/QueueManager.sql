@@ -1,0 +1,3 @@
+CREATE SCHEMA [QueueManager]
+AUTHORIZATION [dbo]
+GO

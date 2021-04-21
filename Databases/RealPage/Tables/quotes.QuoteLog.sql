@@ -1,0 +1,72 @@
+CREATE TABLE [quotes].[QuoteLog]
+(
+[QuoteIDSeq] [varchar] (22) COLLATE SQL_Latin1_General_CP850_CI_AI NOT NULL,
+[IDSeq] [bigint] NOT NULL IDENTITY(1, 1),
+[CustomerIDSeq] [char] (11) COLLATE SQL_Latin1_General_CP850_CI_AI NOT NULL,
+[CompanyName] [varchar] (255) COLLATE SQL_Latin1_General_CP850_CI_AI NOT NULL,
+[Sites] [int] NOT NULL CONSTRAINT [DF_QuoteLog_Sites] DEFAULT ((0)),
+[Units] [int] NOT NULL CONSTRAINT [DF_QuoteLog_Units] DEFAULT ((0)),
+[Beds] [int] NOT NULL CONSTRAINT [DF_QuoteLog_Beds] DEFAULT ((0)),
+[OverrideFlag] [bit] NOT NULL CONSTRAINT [DF_QuoteLog_OverrideFlag] DEFAULT ((0)),
+[OverrideSites] [int] NOT NULL CONSTRAINT [DF_QuoteLog_OverrideSites] DEFAULT ((0)),
+[OverrideUnits] [int] NOT NULL CONSTRAINT [DF_QuoteLog_OverrideUnits] DEFAULT ((0)),
+[ILFExtYearChargeAmount] [money] NOT NULL CONSTRAINT [DF_QuoteLog_ILFCharge] DEFAULT ((0)),
+[ILFDiscountPercent] [numeric] (30, 5) NOT NULL CONSTRAINT [DF_QuoteLog_ILFDiscountPercent] DEFAULT ((0.00)),
+[ILFDiscountAmount] [money] NOT NULL CONSTRAINT [DF_QuoteLog_ILFDiscountAmount] DEFAULT ((0)),
+[ILFNetExtYearChargeAmount] [money] NOT NULL CONSTRAINT [DF_QuoteLog_ILFNetExtYearChargeAmount] DEFAULT ((0)),
+[AccessExtYear1ChargeAmount] [money] NOT NULL CONSTRAINT [DF_QuoteLog_AccessYear1Charge] DEFAULT ((0)),
+[AccessExtYear2ChargeAmount] [money] NOT NULL CONSTRAINT [DF_QuoteLog_AccessYear2Charge] DEFAULT ((0)),
+[AccessExtYear3ChargeAmount] [money] NOT NULL CONSTRAINT [DF_QuoteLog_AccessYear3Charge] DEFAULT ((0)),
+[AccessYear1DiscountPercent] [numeric] (30, 5) NOT NULL CONSTRAINT [DF_QuoteLog_AccessYear1DiscountPercent] DEFAULT ((0.00)),
+[AccessYear1DiscountAmount] [money] NOT NULL CONSTRAINT [DF_QuoteLog_AccessYear1Discount] DEFAULT ((0)),
+[AccessYear2DiscountPercent] [numeric] (30, 5) NOT NULL CONSTRAINT [DF_QuoteLog_AccessYear2DiscountPercent] DEFAULT ((0.00)),
+[AccessYear2DiscountAmount] [money] NOT NULL CONSTRAINT [DF_QuoteLog_AccessYear2Discount] DEFAULT ((0)),
+[AccessYear3DiscountPercent] [numeric] (30, 5) NOT NULL CONSTRAINT [DF_QuoteLog_AccessYear3DiscountPercent] DEFAULT ((0.00)),
+[AccessYear3DiscountAmount] [money] NOT NULL CONSTRAINT [DF_QuoteLog_AccessYear3Discount] DEFAULT ((0)),
+[AccessNetExtYear1ChargeAmount] [money] NOT NULL CONSTRAINT [DF_QuoteLog_AccessNetExtYearChargeAmount] DEFAULT ((0)),
+[AccessNetExtYear2ChargeAmount] [money] NOT NULL CONSTRAINT [DF_QuoteLog_AccessNetExtYear2ChargeAmount] DEFAULT ((0)),
+[AccessNetExtYear3ChargeAmount] [money] NOT NULL CONSTRAINT [DF_QuoteLog_AccessNetExtYear3ChargeAmount] DEFAULT ((0)),
+[QuoteStatusCode] [char] (4) COLLATE SQL_Latin1_General_CP850_CI_AI NOT NULL,
+[CreatedBy] [varchar] (70) COLLATE SQL_Latin1_General_CP850_CI_AI NOT NULL,
+[ModifiedBy] [varchar] (70) COLLATE SQL_Latin1_General_CP850_CI_AI NULL,
+[CreatedByDisplayName] [varchar] (70) COLLATE SQL_Latin1_General_CP850_CI_AI NOT NULL,
+[ModifiedByDisplayName] [varchar] (70) COLLATE SQL_Latin1_General_CP850_CI_AI NULL,
+[SubmittedDate] [datetime] NULL,
+[AcceptanceDate] [datetime] NULL,
+[ApprovalDate] [datetime] NULL,
+[ExpirationDate] [datetime] NULL,
+[CreateDate] [datetime] NOT NULL CONSTRAINT [DF_QuoteLog_CreateDate] DEFAULT (getdate()),
+[ModifiedDate] [datetime] NOT NULL CONSTRAINT [DF_QuoteLog_ModifiedDate] DEFAULT (getdate()),
+[SQLActivityType] [varchar] (70) COLLATE SQL_Latin1_General_CP850_CI_AI NOT NULL CONSTRAINT [DF_QuoteLog_QuoteOperation] DEFAULT ('I'),
+[QuoteTypeCode] [varchar] (4) COLLATE SQL_Latin1_General_CP850_CI_AI NOT NULL CONSTRAINT [DF_QuoteLog_QuoteTypeCode] DEFAULT ('NEWQ'),
+[RECORDSTAMP] [timestamp] NOT NULL,
+[CreatedDate] [datetime] NOT NULL CONSTRAINT [DF_QuoteLog_CreatedDate] DEFAULT (getdate()),
+[CreatedByIDSeq] [bigint] NOT NULL CONSTRAINT [DF_QuoteLog_CreatedByIDSeq] DEFAULT ((-1)),
+[ModifiedByIDSeq] [bigint] NULL,
+[SystemLogDate] [datetime] NOT NULL CONSTRAINT [DF_QuoteLog_SystemLogDate] DEFAULT (getdate()),
+[PrePaidFlag] [int] NOT NULL CONSTRAINT [DF_QuoteLog_PrePaidFlag] DEFAULT ((0)),
+[DealDeskReferenceLevel] [int] NOT NULL CONSTRAINT [DF_QuoteLog_DealDeskReferenceLevel] DEFAULT ((0)),
+[DealDeskCurrentLevel] [int] NOT NULL CONSTRAINT [DF_QuoteLog_DealDeskCurrentLevel] DEFAULT ((0)),
+[DealDeskQueuedDate] [datetime] NULL,
+[DealDeskQueuedByIDSeq] [bigint] NULL,
+[DealDeskDecisionMadeBy] [varchar] (100) COLLATE SQL_Latin1_General_CP850_CI_AI NULL,
+[DealDeskNote] [varchar] (1000) COLLATE SQL_Latin1_General_CP850_CI_AI NULL,
+[DealDeskResolvedByIDSeq] [bigint] NULL,
+[DealDeskResolvedDate] [datetime] NULL,
+[DealDeskStatusCode] [char] (4) COLLATE SQL_Latin1_General_CP850_CI_AI NOT NULL CONSTRAINT [DF_QuoteLog_DealDeskStatusCode] DEFAULT ('NSU'),
+[ExternalQuoteFlag] [int] NOT NULL CONSTRAINT [DF_QuoteLog_ExternalQuoteFlag] DEFAULT ((0)),
+[RollbackReasonCode] [varchar] (6) COLLATE SQL_Latin1_General_CP850_CI_AI NULL,
+[RequestedBy] [varchar] (70) COLLATE SQL_Latin1_General_CP850_CI_AI NULL,
+[ExternalQuoteIIFlag] [int] NOT NULL CONSTRAINT [DF_QuoteLog_ExternalQuoteIIFlag] DEFAULT ((0)),
+[RollbackByIDSeq] [int] NULL,
+[RollBackDate] [datetime] NULL
+) ON [PRIMARY]
+GO
+ALTER TABLE [quotes].[QuoteLog] ADD CONSTRAINT [PK_QuoteLog] PRIMARY KEY CLUSTERED  ([QuoteIDSeq], [IDSeq]) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [IXN_QuoteLog_RECORDSTAMP] ON [quotes].[QuoteLog] ([RECORDSTAMP]) ON [PRIMARY]
+GO
+ALTER TABLE [quotes].[QuoteLog] WITH NOCHECK ADD CONSTRAINT [QuoteLog_has_Quote] FOREIGN KEY ([QuoteIDSeq]) REFERENCES [quotes].[Quote] ([QuoteIDSeq])
+GO
+ALTER TABLE [quotes].[QuoteLog] WITH NOCHECK ADD CONSTRAINT [QuoteLog_has_QuoteStatus] FOREIGN KEY ([QuoteStatusCode]) REFERENCES [quotes].[QuoteStatus] ([Code])
+GO

@@ -1,0 +1,2 @@
+CREATE USER [rri\SvcDataWarehouse2] WITHOUT LOGIN
+GO

@@ -1,0 +1,2 @@
+CREATE USER [rri\THoward] WITHOUT LOGIN
+GO

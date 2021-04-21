@@ -1,0 +1,2 @@
+CREATE USER [rri\OMSDataReader] WITHOUT LOGIN
+GO

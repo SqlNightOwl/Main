@@ -1,0 +1,2 @@
+CREATE USER [SalesForceReader] WITHOUT LOGIN WITH DEFAULT_SCHEMA=[SalesForceReader]
+GO

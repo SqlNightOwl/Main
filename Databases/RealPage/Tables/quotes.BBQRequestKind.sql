@@ -1,0 +1,8 @@
+CREATE TABLE [quotes].[BBQRequestKind]
+(
+[ID] [int] NOT NULL,
+[Name] [varchar] (50) COLLATE SQL_Latin1_General_CP850_CI_AI NOT NULL
+) ON [PRIMARY]
+GO
+ALTER TABLE [quotes].[BBQRequestKind] ADD CONSTRAINT [PK_BBQRequestKind] PRIMARY KEY CLUSTERED  ([ID]) ON [PRIMARY]
+GO

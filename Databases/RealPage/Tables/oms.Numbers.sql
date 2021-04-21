@@ -1,0 +1,7 @@
+CREATE TABLE [oms].[Numbers]
+(
+[Nbr] [int] NOT NULL
+) ON [PRIMARY]
+GO
+ALTER TABLE [oms].[Numbers] ADD CONSTRAINT [PK_Numbers] PRIMARY KEY CLUSTERED  ([Nbr]) ON [PRIMARY]
+GO

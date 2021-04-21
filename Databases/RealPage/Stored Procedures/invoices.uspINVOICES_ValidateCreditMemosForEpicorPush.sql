@@ -1,0 +1,111 @@
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_NULLS ON
+GO
+/*
+exec INVOICES.dbo.uspINVOICES_ValidateCreditMemosForEpicorPush
+*/
+----------------------------------------------------------------------------------------------------
+-- Database  Name  : INVOICES
+-- Procedure Name  : uspINVOICES_ValidateCreditMemosForEpicorPush
+-- Description     : This procedure Validate if any invoices qualify for Epicor Push to get a 
+--                      newly generated BatchCode from Epicor
+-- Input Parameters:
+-- OUTPUT          : 1 or 0.
+--  
+--                   
+-- Code Example    : exec INVOICES.dbo.uspINVOICES_ValidateCreditMemosForEpicorPush
+-- Revision History:
+-- Author          : SRS
+-- 03/28/2007      : Stored Procedure Created.
+-- 08/05/2010      : Shashi Bhushan - Defect#7952 - Credit Reversals in OMS
+-- 05/06/2011	   : Surya Kondapalli - Task# 388 - Epicor Integration for Domin-8 transactions to be pushed to Canadian DB
+----------------------------------------------------------------------------------------------------
+CREATE PROCEDURE [invoices].[uspINVOICES_ValidateCreditMemosForEpicorPush] 
+AS
+BEGIN
+  set nocount on 
+  ----------------------------------------------------------------------------
+  Select	TotalCreditCount = CASE WHEN USACreditCount = 0 AND CanadaCreditCount = 0
+									 THEN 0 ELSE TotalCreditCount END
+		 ,	USACreditCount
+		 ,	CanadaCreditCount
+   From 
+			(
+			 Select Count(Distinct IC.InvoiceIdseq) As  CanadaCreditCount
+			,1 AS 'RowNumber'
+			 From CreditMemo CMC with (nolock)
+			 Inner Join INVOICES.dbo.Invoice IC With (nolock)
+				on CMC.InvoiceIDSeq = IC.InvoiceIDSeq
+			 Inner Join Invoices.dbo.InvoiceItem IIC with (nolock)
+						 on     IIC.InvoiceIDSeq  = IC.InvoiceIDSeq
+			 Inner Join Products.dbo.Product PC with (nolock)
+						 on     IIC.ProductCode = PC.Code
+						 And    IIC.PriceVersion= PC.PriceVersion
+			 Inner Join CUSTOMERS.DBO.ADDRESS ADC WITH (nolock)
+				   On    ADC.CompanyIDSeq    = IC.CompanyIDSeq
+				   And      ADC.AddressTypeCode = IC.BillToAddressTypeCode 
+				   And     (
+							(ADC.AddressTypeCode = IC.BillToAddressTypeCode And 
+							 ADC.AddressTypeCode Like 'PB%'                 And 
+							 coalesce(ADC.PropertyIDSeq,'') = coalesce(IC.PropertyIDSeq,'')
+							)
+							  Or
+						   (ADC.AddressTypeCode = IC.BillToAddressTypeCode And 
+							ADC.AddressTypeCode Not Like 'PB%'  
+						   )
+						  )
+			 Where  CMC.CreditStatusCode = 'APPR'
+			 And    CMC.SentToEpicorStatus is null 
+			 And    CMC.SentToEpicorFlag       = 0
+			 And    CMC.CreditMemoReversalFlag = 0
+			 And    ADC.CountryCode = 'CAN'
+			 And    PC.FamilyCode = 'DCN'
+			 ) As CanadaCreditCount
+	
+		  Join
+		   (
+			  Select Count(Distinct IU.InvoiceIdseq) As USACreditCount
+			 ,1 AS 'RowNumber'
+			 From CreditMemo CMU with (nolock)
+			 Inner Join INVOICES.dbo.Invoice IU With (nolock)
+				on CMU.InvoiceIDSeq = IU.InvoiceIDSeq
+			 Inner Join Invoices.dbo.InvoiceItem IIU with (nolock)
+						 on     IIU.InvoiceIDSeq  = IU.InvoiceIDSeq
+			 Inner Join Products.dbo.Product PU with (nolock)
+						 on     IIU.ProductCode = PU.Code
+						 And    IIU.PriceVersion= PU.PriceVersion
+			 Inner Join CUSTOMERS.DBO.ADDRESS ADU WITH (nolock)
+				   On    ADU.CompanyIDSeq    = IU.CompanyIDSeq
+				   And      ADU.AddressTypeCode = IU.BillToAddressTypeCode 
+				   And     (
+							(ADU.AddressTypeCode = IU.BillToAddressTypeCode And 
+							 ADU.AddressTypeCode Like 'PB%'                 And 
+							 Coalesce(ADU.PropertyIDSeq,'') = Coalesce(IU.PropertyIDSeq,'')
+							)
+							  Or
+						   (ADU.AddressTypeCode = IU.BillToAddressTypeCode And 
+							ADU.AddressTypeCode Not Like 'PB%'  
+						   )
+						  )
+			 Where  CMU.CreditStatusCode = 'APPR'
+			 And    CMU.SentToEpicorStatus is null 
+			 And    CMU.SentToEpicorFlag       = 0
+			 And    CMU.CreditMemoReversalFlag = 0
+			 And    PU.FamilyCode <> 'DCN'
+			) As USACreditCount On USACreditCount.RowNumber = CanadaCreditCount.RowNumber
+			
+		Join	
+		 (
+		  select count(CM.CreditMemoIDSeq) as TotalCreditCount
+		  ,1 AS 'RowNumber'
+		  from   INVOICES.dbo.CreditMemo CM With (nolock)
+		  where  CM.CreditStatusCode = 'APPR'
+		  And    CM.SentToEpicorStatus is null 
+		  And    CM.SentToEpicorFlag       = 0
+		  And    CM.CreditMemoReversalFlag = 0
+		 ) As TotalCreditCount On TotalCreditCount.RowNumber = USACreditCount.RowNumber
+
+  
+END
+GO

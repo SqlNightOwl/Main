@@ -1,0 +1,2 @@
+CREATE USER [SharePointReader] WITHOUT LOGIN
+GO

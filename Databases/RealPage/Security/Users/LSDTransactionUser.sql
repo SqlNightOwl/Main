@@ -1,0 +1,2 @@
+CREATE USER [LSDTransactionUser] WITHOUT LOGIN
+GO

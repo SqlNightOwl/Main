@@ -1,0 +1,3 @@
+CREATE SCHEMA [invoices]
+AUTHORIZATION [dbo]
+GO

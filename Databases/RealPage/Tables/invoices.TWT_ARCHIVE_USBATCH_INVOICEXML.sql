@@ -1,0 +1,30 @@
+CREATE TABLE [invoices].[TWT_ARCHIVE_USBATCH_INVOICEXML]
+(
+[VersionNumber] [bigint] NOT NULL,
+[InvoiceIDSeq] [varchar] (22) COLLATE SQL_Latin1_General_CP850_CI_AI NOT NULL,
+[BillingCycleDate] [datetime] NOT NULL,
+[AccountIDSeq] [varchar] (22) COLLATE SQL_Latin1_General_CP850_CI_AI NOT NULL,
+[CustomerIDSeq] [varchar] (22) COLLATE SQL_Latin1_General_CP850_CI_AI NOT NULL,
+[PropertyIDSeq] [varchar] (22) COLLATE SQL_Latin1_General_CP850_CI_AI NULL,
+[InvoiceXML] [xml] NOT NULL,
+[OutboundProcessStatus] [int] NOT NULL,
+[InboundProcessStatus] [int] NOT NULL,
+[ErrorText] [varchar] (max) COLLATE SQL_Latin1_General_CP850_CI_AI NULL,
+[PrintFlag] [bit] NOT NULL,
+[EmailFlag] [bit] NOT NULL,
+[BusinessUnit] [varchar] (50) COLLATE SQL_Latin1_General_CP850_CI_AI NULL,
+[SendToEmailAddress] [varchar] (max) COLLATE SQL_Latin1_General_CP850_CI_AI NULL,
+[InvoiceTotal] [money] NOT NULL,
+[ProductCount] [int] NOT NULL,
+[LineItemCount] [int] NOT NULL,
+[Lanvera_DeliveryMethod] [varchar] (50) COLLATE SQL_Latin1_General_CP850_CI_AI NULL,
+[Lanvera_LineItemCount] [int] NULL,
+[Lanvera_InvoiceTotal] [money] NULL,
+[DocumentIDSeq] [varchar] (15) COLLATE SQL_Latin1_General_CP850_CI_AI NULL,
+[BatchGenerationID] [varchar] (100) COLLATE SQL_Latin1_General_CP850_CI_AI NULL,
+[CreatedByIDSeq] [bigint] NULL,
+[CreatedDate] [datetime] NOT NULL,
+[ModifiedByIDSeq] [bigint] NULL,
+[ModifiedDate] [datetime] NULL
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
